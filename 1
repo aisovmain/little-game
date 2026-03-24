@@ -1,0 +1,118 @@
+using System;
+
+class GuessNumberGame
+{
+    private int secretNumber;
+    private int attempts = 0;
+    private bool gameOver = false;
+    private Random rand = new();
+
+    public void Run()
+    {
+        ShowTitle();
+        Console.ReadKey(true);
+
+        while (!gameOver)
+        {
+            PlayRound();
+            if (!gameOver)
+            {
+                Console.WriteLine("\nНажмите любую клавишу для новой игры...");
+                Console.ReadKey(true);
+            }
+        }
+
+        Console.WriteLine("Спасибо за игру! 👋");
+    }
+
+    private void PlayRound()
+    {
+        secretNumber = rand.Next(1, 101);
+        attempts = 0;
+        gameOver = false;
+        Console.Clear();
+
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("🎯 Новая игра!");
+        Console.ResetColor();
+        Console.WriteLine($"Я загадал число от 1 до 100. Угадай! (ESC — выход)\n");
+
+        while (!gameOver)
+        {
+            string? input = Console.ReadLine();
+            
+            if (input == null || input.ToUpper() == "ESC")
+            {
+                gameOver = true;
+                return;
+            }
+
+            if (int.TryParse(input, out int guess))
+            {
+                attempts++;
+                GiveHint(guess);
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write("❌ Введите число от 1 до 100: ");
+                Console.ResetColor();
+            }
+        }
+    }
+
+    private void GiveHint(int guess)
+    {
+        Console.Write("Твоя попытка: " + guess + " → ");
+
+        if (guess < secretNumber)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("📈 Слишком мало! Попробуй БОЛЬШЕ");
+        }
+        else if (guess > secretNumber)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("📉 Слишком много! Попробуй МЕНЬШЕ");
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine($"🎉 ПОБЕДА! Угадано за {attempts} попыток!");
+            Console.ResetColor();
+            gameOver = true;
+        }
+    }
+
+    private static void ShowTitle()
+    {
+        Console.Clear();
+        Console.CursorVisible = false;
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.SetCursorPosition(25, 6);
+        Console.WriteLine("███████╗██╗███╗   ██╗ █████╗ ████████╗███████╗");
+        Console.SetCursorPosition(25, 7);
+        Console.WriteLine("██╔════╝██║████╗  ██║██╔══██╗╚══██╔══╝██╔════╝");
+        Console.SetCursorPosition(25, 8);
+        Console.WriteLine("███████╗██║██╔██╗ ██║███████║   ██║   █████╗ ");
+        Console.SetCursorPosition(25, 9);
+        Console.WriteLine("╚════██║██║██║╚██╗██║██╔══██║   ██║   ██╔══╝ ");
+        Console.SetCursorPosition(25, 10);
+        Console.WriteLine("███████║██║██║ ╚████║██║  ██║   ██║   ███████╗");
+        Console.SetCursorPosition(25, 11);
+        Console.WriteLine("╚══════╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝   ╚══════╝");
+        Console.SetCursorPosition(35, 13);
+        Console.WriteLine("Введи число 1-100 | ESC — выход");
+        Console.ResetColor();
+        Console.CursorVisible = true;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
+        new GuessNumberGame().Run();
+    }
+}
